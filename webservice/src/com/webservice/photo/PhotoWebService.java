@@ -34,8 +34,7 @@ public class PhotoWebService {
 	}
 
 	public String findPhotoByZPH(@WebParam(name = "key") String key,
-			@WebParam(name = "serviceName") String serviceName,
-			@WebParam(name = "way") String way) {
+			@WebParam(name = "serviceName") String serviceName) {
 		IPhotoService service = SpringContextUtil.getBean(serviceName,
 				IPhotoService.class);
 		if (service != null) {
