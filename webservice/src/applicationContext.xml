@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:ws="http://jax-ws.dev.java.net/spring/core" xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+               http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context-4.0.xsd
+               http://www.springframework.org/schema/tx
+               http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+               http://www.springframework.org/schema/aop
+               http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+               http://jax-ws.dev.java.net/spring/core
+               http://jax-ws.dev.java.net/spring/core.xsd
+               http://jax-ws.dev.java.net/spring/servlet
+               http://jax-ws.dev.java.net/spring/servlet.xsd
+               http://cxf.apache.org/jaxws
+               http://cxf.apache.org/schemas/jaxws.xsd">
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.webservice"></context:component-scan>
+
+	<import resource="webservice.xml" />
+
+	<!-- 引入并加载jdbc配置文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- 在src目录下查找 -->
+				<value>classpath*:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置数据库连接池 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<!-- Oracle数据库的驱动 -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<!-- 数据库的URL -->
+		<property name="url" value="${jdbc.url}" />
+		<!-- 指定数据库的用户名 -->
+		<property name="username" value="${jdbc.username}" />
+		<!-- 指定数据库的密码 -->
+		<property name="password" value="${jdbc.pwd}" />
+		<!-- 指定数据库的最大连接数100 -->
+		<property name="maxActive" value="3" />
+		<!-- 指定数据库的最大空闲连接数30 -->
+		<property name="maxIdle" value="2" />
+		<!-- 指定数据库的最大等待数300 -->
+		<property name="maxWait" value="300" />
+		<!-- 指定数据库的默认自动提交 -->
+		<property name="defaultAutoCommit" value="true" />
+		<!-- 指定数据库的连接超时时是否启动自动回收 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 指定数据库的删除数据库连接的超时时长,数据库连接多久不用会被自动回收 -->
+		<property name="removeAbandonedTimeout" value="60" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 使用JDBC事务 -->
+	<bean id="myTxManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- spring加载MyBatis映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:com/webservice/mapper/*.xml"></property>
+		<property name="typeAliasesPackage" value="com.webservice.entity" />
+	</bean>
+	<!-- Dao接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.webservice.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+</beans>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:ws="http://jax-ws.dev.java.net/spring/core" xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+               http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context-4.0.xsd
+               http://www.springframework.org/schema/tx
+               http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+               http://www.springframework.org/schema/aop
+               http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+               http://jax-ws.dev.java.net/spring/core
+               http://jax-ws.dev.java.net/spring/core.xsd
+               http://jax-ws.dev.java.net/spring/servlet
+               http://jax-ws.dev.java.net/spring/servlet.xsd
+               http://cxf.apache.org/jaxws
+               http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<bean id="config" class="com.webservice.utils.Config">
+		<property name="gmsfhm_key" value="gmsfhm"></property>
+		<property name="zph_key" value="zph"></property>
+	</bean>
+
+	<jaxws:endpoint id="photoWebServiceImpl" implementor="#photoWebService"
+		address="/photo" />
+	<jaxws:endpoint id="populationWebServiceImpl"
+		implementor="#populationWebService" address="/population" />
+
+	<bean id="onePhotoDao" class="com.webservice.photo.dao.impl.OnePhotoDaoImpl">
+	</bean>
+	<bean id="threePhotoDao" class="com.webservice.photo.dao.impl.ThreePhotoDaoImpl">
+	</bean>
+
+	<bean id="fourPhotoServiceImpl"
+		class="com.webservice.photo.service.impl.WebServicePhotoServiceImpl">
+		<constructor-arg type="String">
+			<value>four</value>
+		</constructor-arg>
+		<property name="photoDao" ref="threePhotoDao"></property>
+	</bean>
+
+	<bean id="onePhotoServiceImpl"
+		class="com.webservice.photo.service.impl.WebServicePhotoServiceImpl">
+		<constructor-arg type="String">
+			<value>one</value>
+		</constructor-arg>
+		<property name="photoDao" ref="onePhotoDao"></property>
+	</bean>
+
+</beans>

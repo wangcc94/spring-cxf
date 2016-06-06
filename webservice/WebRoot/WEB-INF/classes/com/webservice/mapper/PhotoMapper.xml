@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.webservice.dao.IPhotoDao">
+	<resultMap type="com.webservice.entity.Photo" id="photoMap">
+		<result property="context" column="zp" />
+	</resultMap>
+	<select id="findPhotoByZPH" resultMap="photoMap" parameterType="String">
+		select zp from zpb where zph=#{zph}
+	</select>
+</mapper>
